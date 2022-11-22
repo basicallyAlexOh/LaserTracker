@@ -5,7 +5,8 @@ import cv2
 def resize(img):
     return cv2.resize(img, (512, 512))  # arg1- input image, arg- output_width, output_height
 
-cap=cv2.VideoCapture('D:\WIndows\Music\youtube-dl\Video\Red Dot Video for Cats (10 hours).mkv')
+# 'D:\WIndows\Music\youtube-dl\Video\Red Dot Video for Cats (10 hours).mkv'
+cap=cv2.VideoCapture(0)
 
 
 ret,frame=cap.read()
@@ -20,7 +21,12 @@ while ret==True:
 
     contours,_= cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
-    print(len(contours))
+    print('Contour Here:')
+    print(contours)
+    print()
+    print()
+    print()
+    
     max_contour = contours[0]
     for contour in contours:
         if cv2.contourArea(contour)>cv2.contourArea(max_contour):
@@ -32,10 +38,12 @@ while ret==True:
 
     M=cv2.moments(contour)
     
+    '''
     cx=int(M[‘m10’]//M[‘m00’])
     cy=int(M[‘m01’]//M[‘m00’])
     cv2.circle(frame, (cx,cy),3,(255,0,0),-1)
-
+    '''
+    
     cv2.imshow("frame", resize(frame))
 
     cv2.imshow("mask", mask)
