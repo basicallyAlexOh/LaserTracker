@@ -1,2 +1,7 @@
+import sys
+sys.path.append('D:\WIndows\Documents\LaserTracker\LaserTracking')
+import Tracker
 
-print('Hello World')
+t = Tracker.Tracker()
+t.findLaser()
+
