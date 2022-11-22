@@ -19,30 +19,35 @@ while ret==True:
     hsv=cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
     mask=cv2.inRange(hsv,l_b,u_b)
 
-    contours,_= cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-
-    print('Contour Here:')
-    print(contours)
-    print()
-    print()
-    print()
+    contours,hierarchy= cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     
-    max_contour = contours[0]
-    for contour in contours:
-        if cv2.contourArea(contour)>cv2.contourArea(max_contour):
-            max_contour = contour
-
+    '''
     approx=cv2.approxPolyDP(contour, 0.01*cv2.arcLength(contour,True),True)
     x,y,w,h=cv2.boundingRect(approx)
     cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),4)
-
-    M=cv2.moments(contour)
+    '''
     
-    '''
-    cx=int(M[‘m10’]//M[‘m00’])
-    cy=int(M[‘m01’]//M[‘m00’])
-    cv2.circle(frame, (cx,cy),3,(255,0,0),-1)
-    '''
+    if len(contours) > 0 :
+        max_contour = max(contours, key=cv2.contourArea)
+        M = cv2.moments(max_contour)
+        if M["m00"] !=0 :
+            cx = int(M['m10']/M['m00'])
+            cy = int(M['m01']/M['m00'])
+            print("CX : "+str(cx)+"  CY : "+str(cy))
+            if cx >= 120 :
+                print("Turn Left")
+                # turn motors left 
+            if cx < 120 and cx > 40 :
+                print("On Track!")
+                # keep motors in same orientation
+            if cx <=40 :
+                print("Turn Right")
+                # turn motors right 
+            cv2.circle(frame, (cx,cy), 5, (255,255,255), -1)
+    else :
+        print("I don't see the line")
+        # stop motors 
+    
     
     cv2.imshow("frame", resize(frame))
 
@@ -50,6 +55,7 @@ while ret==True:
 
     key = cv2.waitKey(1)
     if key == ord('q'):
+        # turn off motors here 
         break
 
 cv2.waitKey(0)
