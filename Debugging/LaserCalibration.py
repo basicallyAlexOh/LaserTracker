@@ -1,8 +1,7 @@
-#from servo import *
-#from picamera2 import Picamera2, Preview
+from servo import *
+from picamera2 import Picamera2, Preview
 import cv2
 import numpy as np
-import pandas as pd
 import os
 
 def laser_calibration():
@@ -14,7 +13,7 @@ def laser_calibration():
     picam2.configure(camera_config)
     picam2.start()
     time.sleep(5)
-    picam2.capture_file("RedLaser20CM10R.jpg")
+    picam2.capture_file("CalibrationCaptures/RedLaser40CM10R.jpg")
 
 
 
@@ -85,7 +84,8 @@ def find_laser(filename):
 
 
 def main():
-
+    
+    '''
     image_list = []
     for filename in os.listdir("./CalibrationCaptures"):
         ext = filename.split('.')[1].lower()
@@ -93,6 +93,8 @@ def main():
             image_list.append("CalibrationCaptures/" + filename)
     for file in image_list:
         find_laser(file)
+    '''
+    laser_calibration()
 
     # find_laser("CalibrationCaptures/RedLaser20CM10L.jpg")
     
