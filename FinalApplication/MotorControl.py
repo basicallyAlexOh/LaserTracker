@@ -1,7 +1,6 @@
 import threading
 from runner import Runner
 import math
-from PCA9685 import PCA9685
 
 
 class MotorControl(threading.Thread):

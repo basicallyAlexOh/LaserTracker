@@ -3,7 +3,7 @@ import Tracker
 import DistanceFinder
 import MotorControl
 import MotorLogger
-import queue
+import Retracer
 from picamera2 import Picamera2, Preview
 from servo import Servo
 from Motor import Motor
@@ -54,6 +54,13 @@ class Runner(object):
         distanceThread.join()
         controlThread.join()
         loggingThread.join()
+
+
+        retracerThread = Retracer()
+        retracerThread.start()
+
+        retracerThread.join()
+
 
 
 
