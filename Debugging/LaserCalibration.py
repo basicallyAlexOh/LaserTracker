@@ -1,5 +1,5 @@
-from servo import *
-from picamera2 import Picamera2, Preview
+# from servo import *
+# from picamera2 import Picamera2, Preview
 import cv2
 import numpy as np
 import os
@@ -22,30 +22,6 @@ def find_laser(filename):
     print(filename)
 
 
-    # set blue and green channels to 0
-    image[:, :, 0] = 0
-    image[:, :, 1] = 0
-
-
-
-    for i in range(0, 480):
-        for j in range(0, 640):
-            if image[i][j][2] < 250:
-                image[i][j][2] = 0
-    # cv2.waitKey(0)
-
-    # winname = "Test"
-    # cv2.namedWindow(winname)  # Create a named window
-    # cv2.moveWindow(winname, 40, 30)  # Move it to (40,30)
-    # cv2.imshow(winname, r)
-    # cv2.waitKey()
-    # cv2.destroyAllWindows()
-
-    # cv2.waitKey(0)
-
-
-
-
     # red color boundaries [B, G, R]
     lower = [0, 0, 250]
     upper = [255, 255, 255]
@@ -63,7 +39,7 @@ def find_laser(filename):
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
     if len(contours) != 0:
-        print(len(contours))
+        # print(len(contours))
         # draw in blue the contours that were founded
         cv2.drawContours(output, contours, -1, -1, 150)
 
@@ -71,21 +47,77 @@ def find_laser(filename):
         c = max(contours, key=cv2.contourArea)
         x, y, w, h = cv2.boundingRect(c)
 
-        print(x + w/2, y + w/2)
+        print(x + w/2, y + h/2)
+        return x+w/2, y+h/2
+
+        ###########################################
+        # RETURN COORDINATES IN PRINT STATEMENT!! #
+        ###########################################
 
         # draw the biggest contour (c) in green
-        cv2.rectangle(output, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        #cv2.rectangle(output, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
     # show the images
 
-    cv2.imshow("Result", np.hstack([image, output]))
+    #cv2.imshow("Result", np.hstack([image, output]))
 
-    cv2.waitKey(0)
+    #cv2.waitKey(0)
+
+
+
+def find_distance(filename):
+    a,b = find_laser(filename)
+    d = 40017 * pow(b, -1.376)
+
+    ######################################
+    # Bounds to find off-center distance #
+    ######################################
+    fL10 = lambda x: -0.11 * x * x + 12.86 * x - 164.4
+    fL5 = lambda x: -0.0864 * x * x + 9.3043 * x + 16.8
+    fCenter = lambda x: 314
+    fR5 = lambda x: 0.0764 * x * x - 8.3843 * x + 603.4
+    fR10 = lambda x: 0.1064 * x * x - 12.784 * x + 811.9
+
+    if a < fL10(d):
+        #TODO: Fix this for linearization
+        print("Greater than L10")
+        return d, -10
+    elif a < fL5(d):
+        print("Between 10 and 5 L")
+        k = a - fL10(d)
+        j = fL5(d) - a
+        return d, (-10)*(k / (k+j)) + (-5)*(j / (k+j))
+    elif a < fCenter(d):
+
+        print("Between 5 and 0 L")
+        k = a - fL5(d)
+        j = fCenter(d) - a
+        return d, (-5) * (k / (k + j)) + (0) * (j / (k + j))
+    elif a < fR5(d):
+
+        print("Between 0 and 5 R")
+        k = a - fR5(d)
+        j = fCenter(d) - a
+        return d, (0) * (k / (k + j)) + (5) * (j / (k + j))
+
+    elif a < fR10(d):
+        print("Between 5 and 10 R")
+        k = a - fR10(d)
+        j = fR5(d) - a
+        return d, (5) * (k / (k + j)) + (10) * (j / (k + j))
+    else:
+        # TODO: Fix this for linearization
+        print("Greater than R10")
+        return d, 10
+
+
+
+
 
 
 def main():
     
-    '''
+
     image_list = []
     for filename in os.listdir("./CalibrationCaptures"):
         ext = filename.split('.')[1].lower()
@@ -93,8 +125,8 @@ def main():
             image_list.append("CalibrationCaptures/" + filename)
     for file in image_list:
         find_laser(file)
-    '''
-    laser_calibration()
+
+    # laser_calibration()
 
     # find_laser("CalibrationCaptures/RedLaser20CM10L.jpg")
     
