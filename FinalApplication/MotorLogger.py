@@ -10,6 +10,7 @@ class MotorLogger(threading.Thread):
 
 
     def run(self):
-        Runner.lock2.acquire()
-        Runner.log.append((time.time(), Runner.lSpeed, Runner.rSpeed))
-        Runner.lock2.release()
+        while Runner.initialPath:
+            Runner.lock2.acquire()
+            Runner.log.append((time.time(), Runner.lSpeed, Runner.rSpeed))
+            Runner.lock2.release()

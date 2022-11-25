@@ -8,13 +8,14 @@ class DistanceFinder(threading.Thread):
         print("Created Distance Finder")
 
     def run(self):
-        with Runner.condVar:
-            while not Runner.pointReady:
-                Runner.condVar.wait()
-            Runner.lock1.acquire()
-            x,y = self.find_distance()
-            Runner.relPos = (x,y)
-            Runner.lock1.release()
+        while Runner.initialPath:
+            with Runner.condVar:
+                while not Runner.pointReady:
+                    Runner.condVar.wait()
+                Runner.lock1.acquire()
+                x,y = self.find_distance()
+                Runner.relPos = (x,y)
+                Runner.lock1.release()
 
 
     def find_distance(self):

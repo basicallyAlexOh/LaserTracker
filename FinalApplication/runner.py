@@ -10,6 +10,7 @@ from Motor import Motor
 import time
 
 
+
 class Runner(object):
     # Declare Static Variables Here
     lSpeed = 0
@@ -18,6 +19,7 @@ class Runner(object):
     relPos = (-1,-1) # Dist (d, x) from robot
     log = [] # format: (time, lspeed, rspeed)
     motor = Motor()
+    initialPath = True
 
 
     lock1 = threading.RLock()
@@ -27,8 +29,8 @@ class Runner(object):
     camera = Picamera2()
     camera.start()
 
+
     def __init__(self):
-        self.queue = queue.Queue(100)
         self.servo = Servo()
         self.servo.setServoPwm('0', 85)
         self.servo.setServoPwm('1', 0)
@@ -36,9 +38,26 @@ class Runner(object):
 
 
 
+
     def run(self):
-        while Runner.laserPos != (-1,-1):
-            self.queue.put()
+        trackingThread = Tracker()
+        distanceThread = DistanceFinder()
+        controlThread = MotorControl()
+        loggingThread = MotorLogger()
+
+        trackingThread.start()
+        distanceThread.start()
+        controlThread.start()
+        loggingThread.start()
+
+        trackingThread.join()
+        distanceThread.join()
+        controlThread.join()
+        loggingThread.join()
+
+
+
+
 
 
 

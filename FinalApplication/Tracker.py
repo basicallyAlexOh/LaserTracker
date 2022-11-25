@@ -2,22 +2,28 @@ import threading
 import cv2
 import numpy as np
 from runner import Runner
+import time
 
 class Tracker(threading.Thread):
-
 
     def __init__(self,group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
         super().__init__(group=group, target=target, name=name, daemon=daemon)
         print("Created Laser Tracker")
 
     def run(self):
-        with Runner.condVar:
-            Runner.lock1.acquire()
-            x,y = self.find_laser()
-            Runner.laserPos = (x,y)
-            pointReady = True
-            Runner.condVar.notify()
-            Runner.lock1.release()
+        while Runner.initialPath:
+            with Runner.condVar:
+                Runner.lock1.acquire()
+                x,y = self.find_laser()
+                if x == -1 and y == -1:
+                    time.sleep(0.1)
+                    x,y = self.find_laser()
+                    if x == -1 and y == -1:
+                        Runner.initialPath = False
+                Runner.laserPos = (x,y)
+                Runner.pointReady = True
+                Runner.condVar.notify()
+                Runner.lock1.release()
 
 
 
