@@ -1,26 +1,22 @@
-# from servo import *
-# from picamera2 import Picamera2, Preview
+from servo import *
+from picamera2 import Picamera2, Preview
 import cv2
 import numpy as np
 import os
+import time
+
 
 def laser_calibration():
-    pwm=Servo()
-    pwm.setServoPwm('0',85)
-    pwm.setServoPwm('1',0)
-    picam2 = Picamera2()
-    camera_config = picam2.create_preview_configuration()
-    picam2.configure(camera_config)
-    picam2.start()
+
     time.sleep(5)
     picam2.capture_file("CalibrationCaptures/RedLaser40CM10R.jpg")
 
 
-
-def find_laser(filename):
+def find_laser(picam2):
+    filename="CalibrationCaptures/tempRedLaser.jpg"
+    picam2.capture_file(filename)
     image = cv2.imread(filename)
-    print(filename)
-
+    
 
     # red color boundaries [B, G, R]
     lower = [0, 0, 250]
@@ -62,11 +58,14 @@ def find_laser(filename):
     #cv2.imshow("Result", np.hstack([image, output]))
 
     #cv2.waitKey(0)
+    return -1,-1
 
 
 
-def find_distance(filename):
-    a,b = find_laser(filename)
+def find_distance(picam2):
+    a,b = find_laser(picam2)
+    if a == -1 and b == -1:
+        return -1,-1
     d = 40017 * pow(b, -1.376)
 
     ######################################
@@ -80,34 +79,34 @@ def find_distance(filename):
 
     if a < fL10(d):
         #TODO: Fix this for linearization
-        print("Greater than L10")
+        #print("Greater than L10")
         return d, -10
     elif a < fL5(d):
-        print("Between 10 and 5 L")
+        #print("Between 10 and 5 L")
         k = a - fL10(d)
         j = fL5(d) - a
-        return d, (-10)*(k / (k+j)) + (-5)*(j / (k+j))
+        return d, (-10)*(j / (k+j)) + (-5)*(k / (k+j))
     elif a < fCenter(d):
 
-        print("Between 5 and 0 L")
+        #print("Between 5 and 0 L")
         k = a - fL5(d)
         j = fCenter(d) - a
-        return d, (-5) * (k / (k + j)) + (0) * (j / (k + j))
+        return d, (-5) * (j / (k + j)) + (0) * (k / (k + j))
     elif a < fR5(d):
 
-        print("Between 0 and 5 R")
-        k = a - fR5(d)
-        j = fCenter(d) - a
-        return d, (0) * (k / (k + j)) + (5) * (j / (k + j))
+        #print("Between 0 and 5 R")
+        k = a - fCenter(d)
+        j = fR5(d) - a
+        return d, (0) * (j / (k + j)) + (5) * (k / (k + j))
 
     elif a < fR10(d):
-        print("Between 5 and 10 R")
-        k = a - fR10(d)
-        j = fR5(d) - a
-        return d, (5) * (k / (k + j)) + (10) * (j / (k + j))
+        #print("Between 5 and 10 R")
+        k = a - fR5(d)
+        j = fR10(d) - a
+        return d, (5) * (j / (k + j)) + (10) * (k / (k + j))
     else:
         # TODO: Fix this for linearization
-        print("Greater than R10")
+        #print("Greater than R10")
         return d, 10
 
 
@@ -117,7 +116,7 @@ def find_distance(filename):
 
 def main():
     
-
+    '''
     image_list = []
     for filename in os.listdir("./CalibrationCaptures"):
         ext = filename.split('.')[1].lower()
@@ -125,10 +124,24 @@ def main():
             image_list.append("CalibrationCaptures/" + filename)
     for file in image_list:
         find_laser(file)
-
+    '''
     # laser_calibration()
 
     # find_laser("CalibrationCaptures/RedLaser20CM10L.jpg")
+    pwm=Servo()
+    pwm.setServoPwm('0',85)
+    pwm.setServoPwm('1',0)
+    picam2 = Picamera2()
+    camera_config = picam2.create_preview_configuration()
+    picam2.configure(camera_config)
+    picam2.start()
+    for i in range(1,100):
+        time.sleep(1)
+        x,y = find_distance(picam2)
+        if x == -1 and y == -1:
+            print("No Laser Found")
+        else:
+            print(x,y)
     
   
 if __name__ == "__main__":
