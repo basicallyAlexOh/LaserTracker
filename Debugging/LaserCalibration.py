@@ -1,4 +1,5 @@
 from servo import *
+import Motor
 from picamera2 import Picamera2, Preview
 import cv2
 import numpy as np
@@ -108,6 +109,11 @@ def find_distance(picam2):
         # TODO: Fix this for linearization
         #print("Greater than R10")
         return d, 10
+
+
+def controlMotors():
+    motor = Motor()
+    motor.setMotorModel(2000,2000,2000,2000)
 
 
 
