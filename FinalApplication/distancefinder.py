@@ -16,7 +16,7 @@ class DistanceFinder(threading.Thread):
                     runner.Runner.condVar.wait()
                 runner.Runner.lock1.acquire()
                 x,y = self.find_distance()
-                print("Distance Away: ", x, y)
+                #print("Distance Away: ", x, y)
                 runner.Runner.relPos = (x,y)
                 runner.Runner.lock1.release()
             time.sleep(0.01)

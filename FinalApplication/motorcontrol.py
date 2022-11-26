@@ -15,6 +15,7 @@ class MotorControl(threading.Thread):
         while runner.Runner.initialPath:
             runner.Runner.lock1.acquire()
             runner.Runner.lock2.acquire()
+            
             r, theta = self.to_polar(runner.Runner.relPos[0], runner.Runner.relPos[1])
 
             baseSpeed = 0
@@ -26,9 +27,9 @@ class MotorControl(threading.Thread):
                 baseSpeed = 1000
 
             #TODO: Potentially Change to a Polynomial Function for motor offsets
-            offset = math.tan(theta / 2)  # returns value on range [-1,1]
-            lSpeed = (int)(baseSpeed * (1 + offset))
-            rSpeed = (int)(baseSpeed * (1 - offset))
+            offset = 2 * math.atan(theta)  # returns value on range [-1,1]
+            lSpeed = (int)(baseSpeed * (1 + 1.5 * offset))
+            rSpeed = (int)(baseSpeed * (1 - 1.5 * offset))
 
             self.set_motors(lSpeed, rSpeed)
             
@@ -37,6 +38,7 @@ class MotorControl(threading.Thread):
             runner.Runner.lock2.release()
             runner.Runner.lock1.release()
             time.sleep(0.01)
+        self.set_motors(0,0)
 
     def to_polar(self, d, x):
         radius = math.sqrt(d*d + x*x)
@@ -44,7 +46,7 @@ class MotorControl(threading.Thread):
         return radius, theta
 
     def set_motors(self, l, r):
-        #runner.Runner.motor.setMotorModel(l,l,r,r)
+        runner.Runner.motor.setMotorModel(l,l,r,r)
         runner.Runner.lSpeed = l
         runner.Runner.rSpeed = r
 

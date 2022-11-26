@@ -27,6 +27,7 @@ class Motor:
         return duty1,duty2,duty3,duty4
         
     def left_Upper_Wheel(self,duty):
+        duty = duty *-1
         if duty>0:
             self.pwm.setMotorPwm(0,0)
             self.pwm.setMotorPwm(1,duty)
@@ -37,6 +38,7 @@ class Motor:
             self.pwm.setMotorPwm(0,4095)
             self.pwm.setMotorPwm(1,4095)
     def left_Lower_Wheel(self,duty):
+        duty = duty *-1
         if duty>0:
             self.pwm.setMotorPwm(3,0)
             self.pwm.setMotorPwm(2,duty)
@@ -47,6 +49,7 @@ class Motor:
             self.pwm.setMotorPwm(2,4095)
             self.pwm.setMotorPwm(3,4095)
     def right_Upper_Wheel(self,duty):
+        duty = duty *-1
         if duty>0:
             self.pwm.setMotorPwm(6,0)
             self.pwm.setMotorPwm(7,duty)
@@ -57,6 +60,7 @@ class Motor:
             self.pwm.setMotorPwm(6,4095)
             self.pwm.setMotorPwm(7,4095)
     def right_Lower_Wheel(self,duty):
+        duty = duty *-1
         if duty>0:
             self.pwm.setMotorPwm(4,0)
             self.pwm.setMotorPwm(5,duty)

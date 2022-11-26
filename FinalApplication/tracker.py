@@ -20,11 +20,16 @@ class Tracker(threading.Thread):
             with runner.Runner.condVar:
                 runner.Runner.lock1.acquire()
                 x,y = self.find_laser()
-                print("Laser found at: ", x, y)
+                #print("Laser found at: ", x, y)
                 if x == -1 and y == -1:
-                    time.sleep(0.1)
-                    x,y = self.find_laser()
-                    if x == -1 and y == -1:
+                    found = False
+                    time.sleep(0.04)
+                    for i in range(0,5):
+                        x,y = self.find_laser()
+                        if not (x == -1 and y == -1):
+                            found = True
+                            break
+                    if not found:
                         runner.Runner.initialPath = False
                 runner.Runner.laserPos = (x,y)
                 runner.Runner.pointReady = True

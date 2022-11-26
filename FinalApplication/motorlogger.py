@@ -13,8 +13,8 @@ class MotorLogger(threading.Thread):
     def run(self):
         while runner.Runner.initialPath:
             runner.Runner.lock2.acquire()
-            runner.Runner.log.append((time.time_ns(), runner.Runner.lSpeed, runner.Runner.rSpeed))
-            print("Motor Speeds: ", runner.Runner.lSpeed, runner.Runner.rSpeed)
+            runner.Runner.log.append((time.time(), runner.Runner.lSpeed, runner.Runner.rSpeed))
+            #print("Motor Speeds: ", runner.Runner.lSpeed, runner.Runner.rSpeed)
             #time.sleep(1) #TODO: REMOVE THIS
             runner.Runner.lock2.release()
             time.sleep(0.01)
