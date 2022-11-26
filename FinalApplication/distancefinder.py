@@ -1,5 +1,7 @@
 import threading
-from runner import Runner
+import runner
+import time
+import logging
 
 class DistanceFinder(threading.Thread):
 
@@ -8,18 +10,20 @@ class DistanceFinder(threading.Thread):
         print("Created Distance Finder")
 
     def run(self):
-        while Runner.initialPath:
-            with Runner.condVar:
-                while not Runner.pointReady:
-                    Runner.condVar.wait()
-                Runner.lock1.acquire()
+        while runner.Runner.initialPath:
+            with runner.Runner.condVar:
+                while not runner.Runner.pointReady:
+                    runner.Runner.condVar.wait()
+                runner.Runner.lock1.acquire()
                 x,y = self.find_distance()
-                Runner.relPos = (x,y)
-                Runner.lock1.release()
+                print("Distance Away: ", x, y)
+                runner.Runner.relPos = (x,y)
+                runner.Runner.lock1.release()
+            time.sleep(0.01)
 
 
     def find_distance(self):
-        a, b = Runner.laserPos
+        a, b = runner.Runner.laserPos
         if a == -1 and b == -1:
             return -1, -1
         d = 40017 * pow(b, -1.376)

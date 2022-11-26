@@ -1,13 +1,13 @@
 import threading
-import Tracker
-import DistanceFinder
-import MotorControl
-import MotorLogger
-import Retracer
-from picamera2 import Picamera2, Preview
+from tracker import Tracker
+from distancefinder import DistanceFinder
+from motorcontrol import MotorControl
+from motorlogger import MotorLogger
+from retracer import Retracer
 from servo import Servo
 from Motor import Motor
 import time
+import logging
 
 
 
@@ -26,11 +26,13 @@ class Runner(object):
     lock2 = threading.RLock()
     condVar = threading.Condition(lock1)
     pointReady = False
-    camera = Picamera2()
-    camera.start()
+
+
 
 
     def __init__(self):
+        print("Created Runner: Waiting 2 seconds...")
+        time.sleep(2)
         self.servo = Servo()
         self.servo.setServoPwm('0', 85)
         self.servo.setServoPwm('1', 0)

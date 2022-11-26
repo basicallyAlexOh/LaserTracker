@@ -1,35 +1,43 @@
 import threading
 import cv2
 import numpy as np
-from runner import Runner
+import runner
 import time
+from picamera2 import Picamera2, Preview
+import logging
+
 
 class Tracker(threading.Thread):
 
     def __init__(self,group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
         super().__init__(group=group, target=target, name=name, daemon=daemon)
+        self.camera = Picamera2()
+        self.camera.start()
         print("Created Laser Tracker")
 
     def run(self):
-        while Runner.initialPath:
-            with Runner.condVar:
-                Runner.lock1.acquire()
+        while runner.Runner.initialPath:
+            with runner.Runner.condVar:
+                runner.Runner.lock1.acquire()
                 x,y = self.find_laser()
+                print("Laser found at: ", x, y)
                 if x == -1 and y == -1:
                     time.sleep(0.1)
                     x,y = self.find_laser()
                     if x == -1 and y == -1:
-                        Runner.initialPath = False
-                Runner.laserPos = (x,y)
-                Runner.pointReady = True
-                Runner.condVar.notify()
-                Runner.lock1.release()
+                        runner.Runner.initialPath = False
+                runner.Runner.laserPos = (x,y)
+                runner.Runner.pointReady = True
+                #time.sleep(1) #TODO: REMOVE THIS
+                runner.Runner.condVar.notify()
+                runner.Runner.lock1.release()
+            time.sleep(0.01)
 
 
 
     def find_laser(self):
-        filename = "CalibrationCaptures/tempRedLaser.jpg"
-        Runner.camera.capture_file(filename)
+        filename = "tempRedLaser.jpg"
+        self.camera.capture_file(filename)
         image = cv2.imread(filename)
 
         # red color boundaries [B, G, R]
@@ -57,7 +65,7 @@ class Tracker(threading.Thread):
             c = max(contours, key=cv2.contourArea)
             x, y, w, h = cv2.boundingRect(c)
 
-            print(x + w / 2, y + h / 2)
+            #print(x + w / 2, y + h / 2)
             return x + w / 2, y + h / 2
 
             # draw the biggest contour (c) in green

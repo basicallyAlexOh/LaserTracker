@@ -1,6 +1,8 @@
 import threading
-from runner import Runner
+import runner
 import math
+import time
+import logging
 
 
 class MotorControl(threading.Thread):
@@ -10,10 +12,10 @@ class MotorControl(threading.Thread):
         print("Created Motor Controller")
 
     def run(self):
-        while Runner.initialPath:
-            Runner.lock1.acquire()
-            Runner.lock2.acquire()
-            r, theta = self.to_polar(Runner.relPos[0], Runner.relPos[1])
+        while runner.Runner.initialPath:
+            runner.Runner.lock1.acquire()
+            runner.Runner.lock2.acquire()
+            r, theta = self.to_polar(runner.Runner.relPos[0], runner.Runner.relPos[1])
 
             baseSpeed = 0
             if r < 10:
@@ -29,9 +31,12 @@ class MotorControl(threading.Thread):
             rSpeed = (int)(baseSpeed * (1 - offset))
 
             self.set_motors(lSpeed, rSpeed)
+            
+            #time.sleep(1) #TODO: REMOVE THIS
 
-            Runner.lock2.release()
-            Runner.lock1.release()
+            runner.Runner.lock2.release()
+            runner.Runner.lock1.release()
+            time.sleep(0.01)
 
     def to_polar(self, d, x):
         radius = math.sqrt(d*d + x*x)
@@ -39,8 +44,8 @@ class MotorControl(threading.Thread):
         return radius, theta
 
     def set_motors(self, l, r):
-        Runner.motor.setMotorModel(l,l,r,r)
-        Runner.lSpeed = l
-        Runner.rSpeed = r
+        #runner.Runner.motor.setMotorModel(l,l,r,r)
+        runner.Runner.lSpeed = l
+        runner.Runner.rSpeed = r
 
 
