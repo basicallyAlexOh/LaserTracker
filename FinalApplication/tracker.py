@@ -36,7 +36,7 @@ class Tracker(threading.Thread):
                 #time.sleep(1) #TODO: REMOVE THIS
                 runner.Runner.condVar.notify()
                 runner.Runner.lock1.release()
-            time.sleep(0.01)
+            time.sleep(0.02)
 
 
 

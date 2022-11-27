@@ -134,6 +134,7 @@ def main():
     # laser_calibration()
 
     # find_laser("CalibrationCaptures/RedLaser20CM10L.jpg")
+    '''
     pwm=Servo()
     pwm.setServoPwm('0',85)
     pwm.setServoPwm('1',0)
@@ -148,6 +149,13 @@ def main():
             print("No Laser Found")
         else:
             print(x,y)
+    '''
+    
+    
+    start = time.time()
+    time.sleep(0.01)
+    end = time.time()
+    print(end-start)
     
   
 if __name__ == "__main__":
