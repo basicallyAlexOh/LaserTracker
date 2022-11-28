@@ -28,8 +28,8 @@ class MotorControl(threading.Thread):
 
             #TODO: Potentially Change to a Polynomial Function for motor offsets
             offset = 2 * math.atan(theta)  # returns value on range [-1,1]
-            lSpeed = (int)(baseSpeed * (1 + 1.5 * offset))
-            rSpeed = (int)(baseSpeed * (1 - 1.5 * offset))
+            lSpeed = (int)(baseSpeed * (1 + 1.75 * offset))
+            rSpeed = (int)(baseSpeed * (1 - 1.75 * offset))
 
             self.set_motors(lSpeed, rSpeed)
             
@@ -37,7 +37,7 @@ class MotorControl(threading.Thread):
 
             runner.Runner.lock2.release()
             runner.Runner.lock1.release()
-            time.sleep(0.01)
+            time.sleep(0.02)
         self.set_motors(0,0)
 
     def to_polar(self, d, x):

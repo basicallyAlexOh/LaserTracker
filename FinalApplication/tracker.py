@@ -23,12 +23,13 @@ class Tracker(threading.Thread):
                 #print("Laser found at: ", x, y)
                 if x == -1 and y == -1:
                     found = False
-                    time.sleep(0.04)
-                    for i in range(0,5):
+                    time.sleep(0.05)
+                    for i in range(0,3):
                         x,y = self.find_laser()
                         if not (x == -1 and y == -1):
                             found = True
                             break
+                        time.sleep(0.03)
                     if not found:
                         runner.Runner.initialPath = False
                 runner.Runner.laserPos = (x,y)
@@ -36,7 +37,7 @@ class Tracker(threading.Thread):
                 #time.sleep(1) #TODO: REMOVE THIS
                 runner.Runner.condVar.notify()
                 runner.Runner.lock1.release()
-            time.sleep(0.01)
+            time.sleep(0.02)
 
 
 

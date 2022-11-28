@@ -19,7 +19,7 @@ class DistanceFinder(threading.Thread):
                 #print("Distance Away: ", x, y)
                 runner.Runner.relPos = (x,y)
                 runner.Runner.lock1.release()
-            time.sleep(0.01)
+            time.sleep(0.02)
 
 
     def find_distance(self):
