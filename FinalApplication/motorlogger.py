@@ -17,4 +17,5 @@ class MotorLogger(threading.Thread):
             #print("Motor Speeds: ", runner.Runner.lSpeed, runner.Runner.rSpeed)
             #time.sleep(1) #TODO: REMOVE THIS
             runner.Runner.lock2.release()
-            time.sleep(0.02)
+            time.sleep(0.005)
+        runner.Runner.log.append((time.time(), runner.Runner.lSpeed, runner.Runner.rSpeed))

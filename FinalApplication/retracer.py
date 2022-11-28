@@ -12,9 +12,12 @@ class Retracer(threading.Thread):
         i = 0
         self.compressedLog = []
         
+        '''
         print("Initial List:")
         for item in runner.Runner.log:
             print(item)
+        
+        '''
         
         while i < len(runner.Runner.log):
             j = i
@@ -28,9 +31,10 @@ class Retracer(threading.Thread):
             self.compressedLog.append((end - start, runner.Runner.log[i][1], runner.Runner.log[i][2]))
             i = j
         print("Log Compression Complete")
+        '''
         for item in self.compressedLog:
             print(item)
-
+        '''
 
 
         time.sleep(10)
@@ -61,7 +65,8 @@ class Retracer(threading.Thread):
 
         for item in self.compressedLog:
             self.set_motors(item[1],item[2])
-            time.sleep(item[0])
+            time.sleep(item[0]/1.15)
+        self.set_motors(0,0)
 
         
     def set_motors(self, l, r):
