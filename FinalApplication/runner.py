@@ -31,11 +31,12 @@ class Runner(object):
 
 
     def __init__(self):
-        print("Created Runner: Waiting 2 seconds...")
-        time.sleep(2)
         self.servo = Servo()
-        self.servo.setServoPwm('0', 85)
-        self.servo.setServoPwm('1', 0)
+        self.servo.setServoPwm('0', 90)
+        self.servo.setServoPwm('1', 10)
+        print("Created Runner: Waiting 3 seconds...")
+        time.sleep(3)
+        
 
 
 

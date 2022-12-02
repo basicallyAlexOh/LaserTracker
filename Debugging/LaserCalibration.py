@@ -20,8 +20,9 @@ def find_laser(picam2):
     
 
     # red color boundaries [B, G, R]
-    lower = [0, 0, 250]
-    upper = [255, 255, 255]
+    lower = [240, 0, 0]
+    upper = [255, 230, 230]
+
 
     # create NumPy arrays from the boundaries
     lower = np.array(lower, dtype="uint8")
@@ -45,20 +46,20 @@ def find_laser(picam2):
         x, y, w, h = cv2.boundingRect(c)
 
         print(x + w/2, y + h/2)
-        return x+w/2, y+h/2
+        #return x+w/2, y+h/2
 
         ###########################################
         # RETURN COORDINATES IN PRINT STATEMENT!! #
         ###########################################
 
         # draw the biggest contour (c) in green
-        #cv2.rectangle(output, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        cv2.rectangle(output, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
     # show the images
 
-    #cv2.imshow("Result", np.hstack([image, output]))
+    cv2.imshow("Result", np.hstack([image, output]))
 
-    #cv2.waitKey(0)
+    cv2.waitKey(0)
     return -1,-1
 
 
@@ -131,9 +132,12 @@ def main():
     for file in image_list:
         find_laser(file)
     '''
-    # laser_calibration()
-
-    # find_laser("CalibrationCaptures/RedLaser20CM10L.jpg")
+    #laser_calibration()
+    picam2 = Picamera2()
+    camera_config = picam2.create_preview_configuration()
+    picam2.configure(camera_config)
+    picam2.start()
+    find_laser(picam2)
     '''
     pwm=Servo()
     pwm.setServoPwm('0',85)
@@ -151,11 +155,6 @@ def main():
             print(x,y)
     '''
     
-    
-    start = time.time()
-    time.sleep(0.01)
-    end = time.time()
-    print(end-start)
     
   
 if __name__ == "__main__":

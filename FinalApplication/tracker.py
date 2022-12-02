@@ -24,12 +24,12 @@ class Tracker(threading.Thread):
                 if x == -1 and y == -1:
                     found = False
                     time.sleep(0.05)
-                    for i in range(0,3):
+                    for i in range(0,5):
                         x,y = self.find_laser()
                         if not (x == -1 and y == -1):
                             found = True
                             break
-                        time.sleep(0.03)
+                        time.sleep(0.05)
                     if not found:
                         runner.Runner.initialPath = False
                 runner.Runner.laserPos = (x,y)
@@ -45,18 +45,24 @@ class Tracker(threading.Thread):
         filename = "tempRedLaser.jpg"
         self.camera.capture_file(filename)
         image = cv2.imread(filename)
-
+        
         # red color boundaries [B, G, R]
-        lower = [0, 0, 250]
-        upper = [255, 255, 255]
+        
+        lower = [240, 0, 0]
+        upper = [255, 240, 240]
+        
 
+        
         # create NumPy arrays from the boundaries
         lower = np.array(lower, dtype="uint8")
         upper = np.array(upper, dtype="uint8")
 
         # find the colors within the specified boundaries and apply
         # the mask
+        
+        
         mask = cv2.inRange(image, lower, upper)
+        
         output = cv2.bitwise_and(image, image, mask=mask)
 
         ret, thresh = cv2.threshold(mask, 100, 255, cv2.THRESH_BINARY)
