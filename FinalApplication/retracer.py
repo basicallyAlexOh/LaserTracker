@@ -3,7 +3,7 @@ import runner
 import time
 import logging
 
-
+# Retracer class uses motor logs to retrace path taken by following laser ptr 
 class Retracer(threading.Thread):
     def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
         super().__init__(group=group, target=target, name=name, daemon=daemon)
@@ -18,7 +18,7 @@ class Retracer(threading.Thread):
             print(item)
         
         '''
-        
+        # compression algorithm to reduce number of motor controls in motor logs to increase retracing precision
         while i < len(runner.Runner.log):
             j = i
             start = runner.Runner.log[i][0]
@@ -39,6 +39,7 @@ class Retracer(threading.Thread):
 
         time.sleep(10)
 
+    # run loop that sets motor controls from motor logs
     def run(self):
         '''
         for i in reversed(range(0, len(runner.Runner.log) - 1)):
