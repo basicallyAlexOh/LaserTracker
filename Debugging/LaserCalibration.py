@@ -1,6 +1,6 @@
-from servo import *
-import Motor
-from picamera2 import Picamera2, Preview
+#from servo import *
+#import Motor
+#from picamera2 import Picamera2, Preview
 import cv2
 import numpy as np
 import os
@@ -13,15 +13,15 @@ def laser_calibration():
     picam2.capture_file("CalibrationCaptures/RedLaser40CM10R.jpg")
 
 
-def find_laser(picam2):
-    filename="CalibrationCaptures/tempRedLaser.jpg"
-    picam2.capture_file(filename)
+def find_laser():
+    filename="CalibrationCaptures/RedLaser10CM.jpg"
+    #picam2.capture_file(filename)
     image = cv2.imread(filename)
     
 
     # red color boundaries [B, G, R]
-    lower = [240, 0, 0]
-    upper = [255, 230, 230]
+    lower = [0, 0, 240]
+    upper = [255, 255, 255]
 
 
     # create NumPy arrays from the boundaries
@@ -39,7 +39,7 @@ def find_laser(picam2):
     if len(contours) != 0:
         # print(len(contours))
         # draw in blue the contours that were founded
-        cv2.drawContours(output, contours, -1, -1, 150)
+        cv2.drawContours(output, contours, -1, -1, 0)
 
         # find the biggest countour (c) by the area
         c = max(contours, key=cv2.contourArea)
@@ -133,11 +133,12 @@ def main():
         find_laser(file)
     '''
     #laser_calibration()
-    picam2 = Picamera2()
-    camera_config = picam2.create_preview_configuration()
-    picam2.configure(camera_config)
-    picam2.start()
-    find_laser(picam2)
+    # picam2 = Picamera2()
+    # camera_config = picam2.create_preview_configuration()
+    # picam2.configure(camera_config)
+    # picam2.start()
+    # find_laser(picam2)
+    find_laser()
     '''
     pwm=Servo()
     pwm.setServoPwm('0',85)

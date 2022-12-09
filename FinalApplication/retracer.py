@@ -41,28 +41,7 @@ class Retracer(threading.Thread):
 
     # run loop that sets motor controls from motor logs
     def run(self):
-        '''
-        for i in reversed(range(0, len(runner.Runner.log) - 1)):
-            t1, lSpeed, rSpeed = runner.Runner.log[i+1]
-            t2 = runner.Runner.log[i][0]
-            lspeed = -1 * lspeed
-            rspeed = -1 * rspeed
-            #print("From Log: ", (t1-t2)/1000000000, lSpeed, rSpeed)
-            self.set_motors(lSpeed, rSpeed)
-            time.sleep((t1-t2)/1000000000)
-        self.set_motors(0,0)
 
-        '''
-        '''
-        for i in range(0, len(runner.Runner.log) - 1):
-            t1, lSpeed, rSpeed = runner.Runner.log[i]
-            t2 = runner.Runner.log[i+1][0]
-            #print("From Log: ", (t2-t1)/1000000000, lSpeed, rSpeed)
-            self.set_motors(lSpeed, rSpeed)
-            time.sleep((t2-t1)/100)
-            
-        self.set_motors(0,0)
-        '''
 
         for item in self.compressedLog:
             self.set_motors(item[1],item[2])
