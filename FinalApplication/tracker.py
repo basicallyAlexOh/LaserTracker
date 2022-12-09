@@ -6,15 +6,17 @@ import time
 from picamera2 import Picamera2, Preview
 import logging
 
-
+# Tracker class finds position of laser ptr from camera frame and returns its x,y coordinates
 class Tracker(threading.Thread):
 
+    # Starts camera 
     def __init__(self,group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
         super().__init__(group=group, target=target, name=name, daemon=daemon)
         self.camera = Picamera2()
         self.camera.start()
         print("Created Laser Tracker")
 
+    # run loop to continously find x,y coordinates of laser
     def run(self):
         while runner.Runner.initialPath:
             with runner.Runner.condVar:
@@ -41,6 +43,7 @@ class Tracker(threading.Thread):
 
 
 
+    # applies color filter to camera feed to find laser ptr and return its x,y coordniates 
     def find_laser(self):
         filename = "tempRedLaser.jpg"
         self.camera.capture_file(filename)

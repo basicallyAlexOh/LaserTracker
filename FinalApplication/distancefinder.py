@@ -3,12 +3,15 @@ import runner
 import time
 import logging
 
+# DistanceFinder class uses the x,y coordniates of the laser ptr from thr Tracker class 
+# to determine the relative position the laser ptr is from the robot in x,y coordinates 
 class DistanceFinder(threading.Thread):
 
     def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
         super().__init__(group=group, target=target, name=name, daemon=daemon)
         print("Created Distance Finder")
 
+    # run loop that continously finds the relPos coordinates 
     def run(self):
         while runner.Runner.initialPath:
             with runner.Runner.condVar:
@@ -22,6 +25,7 @@ class DistanceFinder(threading.Thread):
             time.sleep(0.02)
 
 
+    # Algorithm that determins the relPos coordinates
     def find_distance(self):
         a, b = runner.Runner.laserPos
         if a == -1 and b == -1:
