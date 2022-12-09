@@ -10,18 +10,24 @@ import time
 import logging
 
 
-
+# Runner class: initializes and runs threads for tracker, distancfinder, 
+# motorcontrol, motorlogger, and retracer classes
 class Runner(object):
     # Declare Static Variables Here
+    # lSpeed and rSpeed are integers that set motor control
     lSpeed = 0
     rSpeed = 0
+    # laserPos provides an x and y coordinate of the laser from the camera frame
     laserPos = (-1,-1) # 480 x 640 (h, w)
+    # relPos provides x and y coordinates of the robots relative position from the laser
     relPos = (-1,-1) # Dist (d, x) from robot
+    # array that logs motor controls 
     log = [] # format: (time, lspeed, rspeed)
     motor = Motor()
     initialPath = True
 
-
+    # lock1, lock2, and condVar are used manage shared data between 
+    # tracker, distancefinder, motorcontrol, and motorlogger classes
     lock1 = threading.RLock()
     lock2 = threading.RLock()
     condVar = threading.Condition(lock1)
@@ -29,7 +35,7 @@ class Runner(object):
 
 
 
-
+    # position servos head camera into specific orientation
     def __init__(self):
         self.servo = Servo()
         self.servo.setServoPwm('0', 90)
@@ -41,7 +47,7 @@ class Runner(object):
 
 
 
-
+    # initializes and runs threads of the classes relevant for tracking laser
     def run(self):
         trackingThread = Tracker()
         distanceThread = DistanceFinder()

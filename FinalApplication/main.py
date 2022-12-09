@@ -1,6 +1,7 @@
 from runner import Runner
 import logging
 
+# main method instantiates Runner class and calls run method 
 def main():
     
     myInst = Runner()
